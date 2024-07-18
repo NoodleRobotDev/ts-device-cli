@@ -1,0 +1,32 @@
+[
+  {
+    "type": "icd",
+    "family": "polaris",
+    "model": "polaris-1"
+  },
+  {
+    "type": "icm",
+    "family": "linq",
+    "model": "linq-1"
+  },
+  {
+    "type": "icm",
+    "family": "linq",
+    "model": "linq-2"
+  },
+  {
+    "type": "icm",
+    "family": "linq",
+    "model": "linq-3"
+  },
+  {
+    "type": "ipg",
+    "family": "pacer",
+    "model": "pacer-1"
+  },
+  {
+    "type": "ipg",
+    "family": "pacer",
+    "model": "pacer-2"
+  }
+]
