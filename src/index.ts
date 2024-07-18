@@ -3,8 +3,9 @@
 
 import { Command } from "commander";
 import fs from "fs";
-import path from "path";
 import figlet from "figlet";
+import Device from "./types/Device";
+import { promisify } from "node:util";
 
 const program = new Command();
 
@@ -21,66 +22,76 @@ program
 
 const options = program.opts();
 
-function listAllDevices() {
-  fs.readFile("./data/device-data.json", "utf8", (err, data) => {
-    try {
-      const deviceJsonData = JSON.parse(data);
-      console.table(deviceJsonData);
-    } catch (error: any) {
-      console.error(`Error reading file: ${error.message}`);
-    }
-  });
+const readFile = promisify(fs.readFile);
+
+async function listAllDevices() {
+  try {
+    const data = await readFile("./data/device-data.json", "utf8");
+    const deviceJsonData: any[] = JSON.parse(data);
+
+    const devices: Device[] = deviceJsonData.map((device: any) => ({
+      type: device.type,
+      family: device.family,
+      model: device.model,
+    }));
+
+    console.table(devices);
+  } catch (error: any) {
+    console.error(`Error reading file: ${error.message}`);
+  }
 }
 
-function listDevicesByFamily(familyName: string) {
-  fs.readFile("./data/device-data.json", "utf8", (err, data) => {
-    try {
-      const filteredDevicesFamily = JSON.parse(data).filter(
-        (d: any) => d.family === familyName,
-      );
-      if (filteredDevicesFamily.length > 0) {
-        console.table(filteredDevicesFamily);
-      } else {
-        emptyResult();
-      }
-    } catch (error: any) {
-      console.error(`Error reading file: ${error.message}`);
+async function listDevicesByFamily(familyName: string): Promise<void> {
+  try {
+    const data = await readFile("./data/device-data.json", "utf8");
+    const devices: Device[] = JSON.parse(data);
+
+    const filteredDevicesFamily = devices.filter(
+      (d) => d.family === familyName,
+    );
+
+    if (filteredDevicesFamily.length > 0) {
+      console.table(filteredDevicesFamily);
+    } else {
+      emptyResult();
     }
-  });
+  } catch (error: any) {
+    console.error(`Error reading file: ${error.message}`);
+  }
 }
 
-function listDevicesByModel(modelName: string) {
-  fs.readFile("./data/device-data.json", "utf8", (err, data) => {
-    try {
-      const filteredDevicesByModel = JSON.parse(data).filter(
-        (d: any) => d.model === modelName,
-      );
-      if (filteredDevicesByModel.length > 0) {
-        console.table(filteredDevicesByModel);
-      } else {
-        emptyResult();
-      }
-    } catch (error: any) {
-      console.error(`Error reading file: ${error.message}`);
+async function listDevicesByModel(modelName: string): Promise<void> {
+  try {
+    const data = await readFile("./data/device-data.json", "utf8");
+    const devices: Device[] = JSON.parse(data);
+
+    const filteredDevicesByModel = devices.filter((d) => d.model === modelName);
+
+    if (filteredDevicesByModel.length > 0) {
+      console.table(filteredDevicesByModel);
+    } else {
+      emptyResult();
     }
-  });
+  } catch (error: any) {
+    console.error(`Error reading file: ${error.message}`);
+  }
 }
 
-function listDevicesByType(typeName: string) {
-  fs.readFile("./data/device-data.json", "utf8", (err, data) => {
-    try {
-      const filteredDevicesByType = JSON.parse(data).filter(
-        (d: any) => d.type === typeName,
-      );
-      if (filteredDevicesByType.length > 0) {
-        console.table(filteredDevicesByType);
-      } else {
-        emptyResult();
-      }
-    } catch (error: any) {
-      console.error(`Error reading file: ${error.message}`);
+async function listDevicesByType(typeName: string): Promise<void> {
+  try {
+    const data = await readFile("./data/device-data.json", "utf8");
+    const devices: Device[] = JSON.parse(data);
+
+    const filteredDevicesByType = devices.filter((d) => d.type === typeName);
+
+    if (filteredDevicesByType.length > 0) {
+      console.table(filteredDevicesByType);
+    } else {
+      emptyResult();
     }
-  });
+  } catch (error: any) {
+    console.error(`Error reading file: ${error.message}`);
+  }
 }
 
 function emptyResult() {
